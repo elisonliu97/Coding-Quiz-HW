@@ -9,7 +9,8 @@ var resultsEl = document.querySelector("results");
 var timeLeft
 var questionArr
 var qNum
-
+var getAns
+var gameClear
 
 // QUESTIONS
 var myQuestions = [
@@ -54,15 +55,25 @@ function countdown(){
             clearInterval(timeInterval);
             timerEl.textContent = "Time Left:";
         }
+        if(gameClear){
+            clearInterval(timeInterval);
+        }
     }, 1000);
 
 }
 
 function showQuestion(qNum){
+
+    if (qNum >= myQuestions.length){
+        gameClear = true;
+        return;
+    }
+
     var qDiv = document.createElement('div');
+    qDiv.id = "qDivId"
     quizEl.appendChild(qDiv);
     var qPar = document.createElement('p');
-    quizEl.appendChild(qPar);
+    qDiv.appendChild(qPar);
 
     qPar.textContent = myQuestions[qNum].question;
 
@@ -73,17 +84,40 @@ function showQuestion(qNum){
         var qAns = document.createElement("button");
         qAns.textContent = answerArr[ans];
         qAns.setAttribute("data-number", ans);
-        quizEl.appendChild(qAns);
+        qAns.setAttribute("class", "ans-btn")
+        qDiv.appendChild(qAns);
     }
-    
-    
+}
+function deleteQuestion(){
+    var qDivId = document.getElementById("qDivId");
+    qDivId.remove();
+}
 
+
+function checkAnswer(event){
+    var ansEl = event.target;
+    var ansInd = ansEl.getAttribute("data-number");
+    console.log(ansInd)
+    console.log(myQuestions[qNum].correctAnswer)
+    if (ansInd == myQuestions[qNum].correctAnswer){
+        qNum++;
+        deleteQuestion();
+        showQuestion(qNum);
+    }
+    else {
+        qNum++;
+        timeLeft = timeLeft - 15;
+        deleteQuestion();
+        showQuestion(qNum);
+    }
 }
 
 function startGame(event){
     countdown();
+    gameClear = false;
     qNum = 0;
     showQuestion(qNum);
+    quizEl.addEventListener("click", checkAnswer);
 
 
 }
