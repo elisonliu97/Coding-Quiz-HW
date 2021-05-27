@@ -16,36 +16,38 @@ var gameClear
 // QUESTIONS
 var myQuestions = [
     {
-      question: "Who invented JavaScript?",
+      question: "What's the file type for Javascript?",
       answers: {
-        1: "Douglas Crockford",
-        2: "Sheryl Sandberg",
-        3: "Brendan Eich"
+        0: ".js",
+        1: ".java",
+        2: ".script",
+        3: ".css"
+      },
+      correctAnswer: 0
+    },
+    {
+      question: "Inside which HTML element do we put the Javascript",
+      answers: {
+        0: "<js>",
+        1: "<javascript>",
+        2: "<script>",
+        3: "<scripting>"
       },
       correctAnswer: 2
     },
     {
-      question: "Which one of these is a JavaScript package manager?",
+      question: "What is the correct syntax for referring to an external script called 'xxx.js'?",
       answers: {
-        1: "Node.js",
-        2: "TypeScript",
-        3: "npm"
-      },
-      correctAnswer: 2
-    },
-    {
-      question: "Which tool can you use to ensure code quality?",
-      answers: {
-        1: "Angular",
-        2: "jQuery",
-        3: "RequireJS",
-        4: "ESLint"
+        0: "<script id='xxx.js'>",
+        1: "<script name='xxx.js'>",
+        2: "<script href='xxx.js'>",
+        3: "<script src='xxx.js'>"
       },
       correctAnswer: 3
     }
   ];
 
-
+// timer function
 function countdown(){
     timeLeft = 100;
     timerEl.textContent = timeLeft
@@ -63,6 +65,7 @@ function countdown(){
 
 }
 
+// function to display each question
 function showQuestion(qNum){
 
     if (qNum >= myQuestions.length){
@@ -80,7 +83,6 @@ function showQuestion(qNum){
     qPar.textContent = myQuestions[qNum].question;
 
     var answerArr = Object.values(myQuestions[qNum].answers);
-    console.log(answerArr)
 
     for (var ans in answerArr){
         var qAns = document.createElement("button");
@@ -90,22 +92,21 @@ function showQuestion(qNum){
         qDiv.appendChild(qAns);
     }
 }
+
+// function to stop displaying each question
 function deleteQuestion(){
     var qDivId = document.getElementById("qDivId");
     qDivId.remove();
 }
 
-
+// function to check if the button pressed is the right answer
 function checkAnswer(event){
-    console.log(event.target.class)
     if (event.target.class !== "ans-btn"){
         return;
     }
 
     var ansEl = event.target;
     var ansInd = ansEl.getAttribute("data-number");
-    console.log(ansInd)
-    console.log(myQuestions[qNum].correctAnswer)
     if (ansInd == myQuestions[qNum].correctAnswer){
         qNum++;
         deleteQuestion();
@@ -119,6 +120,7 @@ function checkAnswer(event){
     }
 }
 
+// function to start the quiz
 function startGame(event){
     countdown();
     gameClear = false;
@@ -127,6 +129,7 @@ function startGame(event){
     quizEl.addEventListener("click", checkAnswer);
 }
 
+// function to input the score after the quiz is finished
 function scoreTracker(){
     var scoreDiv = document.createElement('div');
     scoreDiv.id = "scoreDivId"
@@ -152,10 +155,7 @@ function scoreTracker(){
     });
 }
 
-function getAllScores(){
-
-}
-
+// function to show and hide the score
 function displayScore(){
     showScoreEl.hidden = true;
     var values = [];
@@ -188,12 +188,3 @@ function displayScore(){
 // EVENT LISTENERS
 startEl.addEventListener("click", startGame);
 showScoreEl.addEventListener("click", displayScore)
-
-// WHEN BUTTON IS CLICKED GAME IS STARTED
-// COUNTDOWN STARTS
-// QUESTION 1 APPEARS
-// BUTTONS APPEAR
-
-// QUESTIONS AND AnSWERS INSIDE AN ARRAY OF OBJECTS
-// NEED COUNTER TO CHECK WHICH QUESTION IT IS
-// REMEMBER TO CLEAR BUTTONS IF YOU APPEND
