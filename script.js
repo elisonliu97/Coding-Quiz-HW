@@ -122,6 +122,7 @@ function checkAnswer(event){
 
 // function to start the quiz
 function startGame(event){
+    startEl.hidden = true;
     countdown();
     gameClear = false;
     qNum = 0;
@@ -133,7 +134,7 @@ function startGame(event){
 function scoreTracker(){
     var scoreDiv = document.createElement('div');
     scoreDiv.id = "scoreDivId"
-    resultsEl.appendChild(scoreDiv);
+    quizEl.appendChild(scoreDiv);
 
     var scorePar = document.createElement('p');
     scoreDiv.appendChild(scorePar);
@@ -152,6 +153,7 @@ function scoreTracker(){
         var scoreName = document.querySelector("#scoreInput").value;
         localStorage.setItem(scoreName, timeLeft);
         scoreDiv.remove();
+        startEl.hidden = false;
     });
 }
 
