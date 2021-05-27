@@ -2,7 +2,8 @@
 var timerEl = document.getElementById('timer');
 var startEl = document.getElementById('start');
 var quizEl = document.getElementById('quiz');
-var resultsEl = document.querySelector("results");
+var resultsEl = document.getElementById("results");
+var showScoreEl = document.getElementById("showScore");
 
 
 // VARIABLES
@@ -52,11 +53,11 @@ function countdown(){
         timeLeft--;
         timerEl.textContent = timeLeft;
         if(timeLeft < 1) {
-            clearInterval(timeInterval);
-            timerEl.textContent = "Time Left:";
+            gameClear = true
         }
         if(gameClear){
             clearInterval(timeInterval);
+            timerEl.textContent = "Time Left:"
         }
     }, 1000);
 
@@ -66,6 +67,7 @@ function showQuestion(qNum){
 
     if (qNum >= myQuestions.length){
         gameClear = true;
+        scoreTracker();
         return;
     }
 
@@ -84,7 +86,7 @@ function showQuestion(qNum){
         var qAns = document.createElement("button");
         qAns.textContent = answerArr[ans];
         qAns.setAttribute("data-number", ans);
-        qAns.setAttribute("class", "ans-btn")
+        qAns.class = "ans-btn"
         qDiv.appendChild(qAns);
     }
 }
@@ -95,6 +97,11 @@ function deleteQuestion(){
 
 
 function checkAnswer(event){
+    console.log(event.target.class)
+    if (event.target.class !== "ans-btn"){
+        return;
+    }
+
     var ansEl = event.target;
     var ansInd = ansEl.getAttribute("data-number");
     console.log(ansInd)
@@ -118,17 +125,69 @@ function startGame(event){
     qNum = 0;
     showQuestion(qNum);
     quizEl.addEventListener("click", checkAnswer);
+}
 
+function scoreTracker(){
+    var scoreDiv = document.createElement('div');
+    scoreDiv.id = "scoreDivId"
+    resultsEl.appendChild(scoreDiv);
+
+    var scorePar = document.createElement('p');
+    scoreDiv.appendChild(scorePar);
+    scorePar.textContent = "Your score is: " + timeLeft + ". Please enter your initials: ";
+
+    var scoreInput = document.createElement('input');
+    scoreInput.id = "scoreInput"
+    scoreDiv.appendChild(scoreInput);
+
+    var scoreBtn = document.createElement('button');
+    scoreBtn.id = "scoreBtn"
+    scoreDiv.appendChild(scoreBtn)
+    scoreBtn.textContent = "OK"
+
+    scoreBtn.addEventListener("click", function(event) {
+        var scoreName = document.querySelector("#scoreInput").value;
+        localStorage.setItem(scoreName, timeLeft);
+        scoreDiv.remove();
+    });
+}
+
+function getAllScores(){
 
 }
 
+function displayScore(){
+    showScoreEl.hidden = true;
+    var values = [];
+    var keyArr = Object.keys(localStorage);
+    for (var i = 0; i < keyArr.length; i++ ){
+        values.push(localStorage.getItem(keyArr[i]));
+    }
+    var scoreboardDiv = document.createElement('div');
+    scoreboardDiv.id = "scoreboardDivId"
+    resultsEl.appendChild(scoreboardDiv);
 
+    for (var i = 0; i < keyArr.length; i++){
+        var scoreboardPar = document.createElement('p');
+        scoreboardDiv.appendChild(scoreboardPar);
+        scoreboardPar.textContent = keyArr[i] + " : " + values[i];
+    }
 
+    var scoreboardBtn = document.createElement('button');
+    scoreboardBtn.id = "scoreboardBtn"
+    scoreboardDiv.appendChild(scoreboardBtn)
+    scoreboardBtn.textContent = "Hide Scoreboard"
 
+    scoreboardBtn.addEventListener("click", function(){
+        scoreboardDiv.remove();
+        showScoreEl.hidden = false;
+    });
+}
 
 
 // EVENT LISTENERS
 startEl.addEventListener("click", startGame);
+showScoreEl.addEventListener("click", displayScore)
 
 // WHEN BUTTON IS CLICKED GAME IS STARTED
 // COUNTDOWN STARTS
